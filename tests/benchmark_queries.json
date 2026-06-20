@@ -1,0 +1,54 @@
+[
+    {
+        "query": "What does CMPXCHG16B do and what's required to use it?",
+        "expected_facts": [
+            "compares 128-bit value in RDX:RAX with memory operand",
+            "requires at least SSE4.2 or AVX",
+            "CPUID feature flag: CMPXCHG16B",
+            "writes ZF based on comparison result"
+        ]
+    },
+    {
+        "query": "What flags does the SUB instruction affect?",
+        "expected_facts": [
+            "CF",
+            "PF",
+            "AF",
+            "ZF",
+            "SF",
+            "OF"
+        ]
+    },
+    {
+        "query": "What's the opcode encoding for ADD r/m32, r32?",
+        "expected_facts": [
+            "primary opcode: 01",
+            "ModRM byte",
+            "r/m32",
+            "r32"
+        ]
+    },
+    {
+        "query": "Which CPUID feature flag indicates AVX-512BW support?",
+        "expected_facts": [
+            "AVX512BW"
+        ]
+    },
+    {
+        "query": "What's the difference between LGDT and LIDT?",
+        "expected_facts": [
+            "LGDT loads Global Descriptor Table Register (GDTR)",
+            "LIDT loads Interrupt Descriptor Table Register (IDTR)",
+            "both are privileged instructions"
+        ]
+    },
+    {
+        "query": "Which instructions write to the flags register without reading it?",
+        "expected_facts": [
+            "STC",
+            "CLC",
+            "CMC",
+            "SAHF"
+        ]
+    }
+]

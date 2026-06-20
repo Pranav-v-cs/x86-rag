@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+data/chroma/
+venv/
+.venv/
+.DS_Store
+*.pdf
+*.html
+*.csv
