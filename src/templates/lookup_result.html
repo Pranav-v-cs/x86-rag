@@ -1,0 +1,27 @@
+<div style="margin-top: 0.75rem;">
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% elif not chunks %}
+    <div class="error">No instruction found for mnemonic: {{ mnemonic }}</div>
+{% else %}
+    {% set ns = namespace(last_subsection=None) %}
+    {% for chunk in chunks %}
+        {% if chunk.subsection != ns.last_subsection %}
+            {% set ns.last_subsection = chunk.subsection %}
+            <div class="card">
+                <h2>{{ chunk.subsection|upper }}</h2>
+        {% endif %}
+        <div class="source">
+            <div class="meta">
+                <span class="tag tag-mnemonic">{{ chunk.mnemonic }}</span>
+                {% if chunk.page %}<span class="tag tag-source">Page {{ chunk.page }}</span>{% endif %}
+                <span>{{ chunk.source }}</span>
+            </div>
+            <pre>{{ chunk.text }}</pre>
+        </div>
+        {% if loop.nextitem is undefined or loop.nextitem.subsection != chunk.subsection %}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+</div>

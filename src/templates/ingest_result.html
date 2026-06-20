@@ -1,0 +1,15 @@
+<div style="margin-top: 0.75rem;">
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% elif done %}
+    <div class="card" style="border-color: #238636;">
+        <h2 style="color: #3fb950;">Ingestion complete</h2>
+        <p>Chunks indexed: <strong>{{ chunk_count }}</strong></p>
+        <p>ChromaDB count: <strong>{{ chroma_count }}</strong></p>
+    </div>
+{% else %}
+    <div class="card">
+        <p><span class="spinner"></span> Ingestion in progress&hellip;</p>
+    </div>
+{% endif %}
+</div>

@@ -1,0 +1,23 @@
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="value">{{ s.num_documents }}</div>
+        <div class="label">Source Documents</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">{{ s.num_chunks }}</div>
+        <div class="label">Chunks Indexed</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">{{ s.num_unique_mnemonics }}</div>
+        <div class="label">Unique Mnemonics</div>
+    </div>
+    <div class="stat-card">
+        <div class="value">{{ s.vector_db_size }}</div>
+        <div class="label">Vector DB Size</div>
+    </div>
+</div>
+<div style="margin-top: 0.75rem; display: flex; gap: 1rem; font-size: 0.85rem; color: #8b949e;">
+    <span>SDM Vol1: <strong>{{ s.sdm_vol1_count }}</strong> file(s)</span>
+    <span>SDM Vol2: <strong>{{ s.sdm_vol2_count }}</strong> file(s)</span>
+    <span>HTML Ref: <strong>{{ s.html_ref_count }}</strong> file(s)</span>
+</div>

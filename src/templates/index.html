@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex-row">
+    <div class="card" style="flex: 2;">
+        <h2>Ask a question</h2>
+        <form hx-post="/query" hx-target="#query-result" hx-indicator="#query-spinner">
+            <input type="text" name="question" placeholder='e.g. "What does CMPXCHG16B do?"' required>
+            <button type="submit" class="primary">
+                <span id="query-spinner" class="spinner htmx-indicator"></span>
+                Ask
+            </button>
+        </form>
+        <div id="query-result"></div>
+    </div>
+
+    <div class="card" style="flex: 1;">
+        <h2>Lookup mnemonic</h2>
+        <form hx-post="/lookup" hx-target="#lookup-result" hx-indicator="#lookup-spinner">
+            <input type="text" name="mnemonic" placeholder="e.g. CMPXCHG16B" required>
+            <button type="submit" class="primary">
+                <span id="lookup-spinner" class="spinner htmx-indicator"></span>
+                Lookup
+            </button>
+        </form>
+        <div id="lookup-result"></div>
+    </div>
+</div>
+
+<div class="flex-row">
+    <div class="card" style="flex: 1;">
+        <h2>Retrieve sources</h2>
+        <form hx-post="/sources" hx-target="#sources-result" hx-indicator="#sources-spinner">
+            <input type="text" name="question" placeholder="Search for relevant sources" required>
+            <button type="submit" class="primary">
+                <span id="sources-spinner" class="spinner htmx-indicator"></span>
+                Search
+            </button>
+        </form>
+        <div id="sources-result"></div>
+    </div>
+
+    <div class="card" style="flex: 1;">
+        <h2>Ingest documents</h2>
+        <p style="font-size:0.85rem;color:#8b949e;margin-bottom:0.75rem;">
+            Parse PDFs from <code>docs/sdm_vol2/</code> and <code>docs/html_ref/</code>.
+            This may take a while.
+        </p>
+        <form hx-post="/ingest" hx-target="#ingest-result" hx-indicator="#ingest-spinner">
+            <button type="submit" class="primary">
+                <span id="ingest-spinner" class="spinner htmx-indicator"></span>
+                Start Ingestion
+            </button>
+        </form>
+        <div id="ingest-result" style="margin-top:0.75rem;"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Statistics</h2>
+    <div id="stats-area"
+         hx-get="/stats"
+         hx-trigger="load"
+         hx-target="this"
+         hx-indicator="#stats-spinner">
+        <span id="stats-spinner" class="spinner htmx-indicator"></span> Loading...
+    </div>
+</div>
+
+{% endblock %}

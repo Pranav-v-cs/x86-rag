@@ -8,4 +8,5 @@ venv/
 .DS_Store
 *.pdf
 *.html
+!src/templates/*.html
 *.csv

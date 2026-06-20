@@ -1,6 +1,6 @@
 # x86-RAG
 
-A CLI-based Retrieval-Augmented Generation (RAG) assistant scoped specifically to
+A Retrieval-Augmented Generation (RAG) assistant scoped specifically to
 **Intel's x86-64 instruction set** — instruction semantics, opcode encoding, operands,
 flags affected, exceptions, and CPUID/feature requirements.
 
@@ -44,55 +44,49 @@ The relevant files are:
 - `325383-sdm-vol-2abcd.pdf` (Volume 2, combined)
 - `253665-sdm-vol-1.pdf` (Volume 1)
 
-Place the PDFs in the appropriate `docs/sdm_vol*` directories and run `ingest`.
+Place the PDFs in the appropriate `docs/sdm_vol*` directories and run `ingest`
+(via the web UI or CLI).
 
 Missing directories are skipped gracefully — you can start with just Volume 2.
 
 ## Usage
 
-### Ingest documents
+### Web UI (primary)
 
 ```bash
-./x86-rag ingest
+./x86-rag
 ```
 
-This parses all PDFs/HTML, chunks instruction entries by subsection, generates
-embeddings, and stores them in ChromaDB at `data/chroma/`.
+Opens a Flask web server at **http://localhost:8086** — the port number references
+the Intel 8086 processor.
 
-### Query
+The UI provides:
+- **Query** — ask questions about x86-64 instructions, get LLM-generated answers with source citations
+- **Lookup** — direct mnemonic lookup (LLM-free), shows all subsections verbatim
+- **Sources** — retrieve relevant chunks without an LLM call (debug retrieval quality)
+- **Ingest** — parse PDFs/HTML files, build vector + mnemonic index
+- **Stats** — view index statistics (documents, chunks, mnemonics, DB size)
+
+All interactions use HTMX — no page reloads, no JavaScript framework.
+
+### CLI (secondary)
+
+CLI commands remain available via the `--cli` flag:
 
 ```bash
-./x86-rag query "What does CMPXCHG16B do and what's required to use it?"
+./x86-rag --cli ingest
+./x86-rag --cli query "What does CMPXCHG16B do?"
+./x86-rag --cli lookup CMPXCHG16B
+./x86-rag --cli sources "which instructions write to the flags register"
+./x86-rag --cli stats
 ```
 
-Hybrid retrieval (BM25 + vector search + mnemonic boost) → LLM generates a
-cited answer.
-
-### Lookup (LLM-free)
+Or directly via Python:
 
 ```bash
-./x86-rag lookup CMPXCHG16B
+python -m src --cli ingest
+python -m src --cli query "What does CMPXCHG16B do?"
 ```
-
-Direct mnemonic match against the index. Prints all subsections verbatim
-(opcode, description, flags, exceptions) with source/page — no LLM involved.
-
-### Sources only
-
-```bash
-./x86-rag sources "which instructions write to the flags register"
-```
-
-Shows the top retrieved chunks with metadata but no LLM call — useful for
-debugging retrieval quality.
-
-### Stats
-
-```bash
-./x86-rag stats
-```
-
-Shows number of documents indexed, chunks, unique mnemonics, and vector DB size.
 
 ## Configuration
 
@@ -104,6 +98,8 @@ Environment variables:
 | `EMBEDDING_MODEL` | `BAAI/bge-small-en-v1.5` | Sentence Transformers model |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
 | `CHROMA_PERSIST_DIR` | `data/chroma` | ChromaDB persistence directory |
+| `X86_RAG_PORT` | `8086` | Web UI port |
+| `X86_RAG_DEBUG` | `0` | Enable Flask debug mode (`1`) |
 
 ## Architecture
 
@@ -136,7 +132,8 @@ Environment variables:
                     └──────┬───────┘
                            │ answer
                     ┌──────▼───────┐
-                    │    CLI       │
+                    │   Web UI     │
+                    │ (Flask+HTMX) │
                     └──────────────┘
 ```
 
@@ -161,9 +158,7 @@ or generated answers. This catches chunking/retrieval regressions.
 To run validation:
 
 ```bash
-# Ingest first, then run each query manually:
-./x86-rag query "What does CMPXCHG16B do and what's required to use it?"
-./x86-rag sources "What does CMPXCHG16B do and what's required to use it?"
+./x86-rag --cli sources "What does CMPXCHG16B do and what's required to use it?"
 ```
 
 ## Project Structure
@@ -178,14 +173,23 @@ x86-rag/
 │   └── chroma/            # ChromaDB persistence
 ├── src/
 │   ├── __init__.py
-│   ├── __main__.py
-│   ├── cli.py             # Typer CLI
+│   ├── __main__.py        # Entry: web server (default) or CLI (--cli)
+│   ├── web.py             # Flask web UI
+│   ├── cli.py             # Typer CLI (secondary)
 │   ├── models.py          # Dataclasses
 │   ├── chunking.py        # Subsection detection & chunking
 │   ├── ingest.py          # PDF + HTML ingestion
 │   ├── embeddings.py      # Sentence Transformers + ChromaDB
 │   ├── retrieval.py       # BM25 + vector + RRF fusion
-│   └── llm.py             # Ollama client
+│   ├── llm.py             # Ollama client
+│   └── templates/         # Jinja2 templates
+│       ├── base.html
+│       ├── index.html
+│       ├── query_result.html
+│       ├── lookup_result.html
+│       ├── sources_result.html
+│       ├── ingest_result.html
+│       └── stats_partial.html
 ├── tests/
 │   └── benchmark_queries.json
 ├── x86-rag                # Entry point shell script

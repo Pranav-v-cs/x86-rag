@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x86-RAG &mdash; Intel x86-64 Instruction Reference</title>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0d1117; color: #e6edf3; line-height: 1.6;
+        }
+        .container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+        header {
+            border-bottom: 1px solid #30363d; padding-bottom: 1rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        }
+        header h1 { font-size: 1.4rem; color: #58a6ff; }
+        header h1 span { color: #8b949e; font-weight: normal; }
+        header nav { margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        nav a {
+            color: #8b949e; text-decoration: none; padding: 0.35rem 0.75rem;
+            border-radius: 6px; font-size: 0.85rem; border: 1px solid #30363d;
+        }
+        nav a:hover, nav a.active { background: #21262d; color: #58a6ff; border-color: #58a6ff; }
+        main { min-height: 60vh; }
+        .card {
+            background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+            padding: 1.25rem; margin-bottom: 1rem;
+        }
+        .card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; color: #f0f6fc; }
+        label { display: block; margin-bottom: 0.35rem; font-size: 0.85rem; color: #8b949e; }
+        input[type="text"], input[type="search"] {
+            width: 100%; padding: 0.6rem 0.75rem; border-radius: 6px;
+            border: 1px solid #30363d; background: #0d1117; color: #e6edf3;
+            font-size: 0.95rem; margin-bottom: 0.75rem;
+        }
+        input:focus { outline: none; border-color: #58a6ff; }
+        button {
+            padding: 0.5rem 1.25rem; border-radius: 6px; border: 1px solid #30363d;
+            background: #21262d; color: #e6edf3; font-size: 0.85rem; cursor: pointer;
+        }
+        button:hover { background: #30363d; border-color: #58a6ff; }
+        button.primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+        button.primary:hover { background: #388bfd; }
+        .error { color: #f85149; padding: 0.75rem; background: #2d1215; border-radius: 6px; }
+        .meta { font-size: 0.8rem; color: #8b949e; margin-bottom: 0.25rem; }
+        .source { padding: 0.6rem; margin-bottom: 0.5rem; background: #0d1117; border-radius: 6px; font-size: 0.85rem; }
+        .source .tag { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; margin-right: 0.4rem; }
+        .tag-mnemonic { background: #1f6feb33; color: #58a6ff; }
+        .tag-subsection { background: #23863633; color: #3fb950; }
+        .tag-source { background: #9e6a0333; color: #d29922; }
+        pre { background: #0d1117; padding: 0.75rem; border-radius: 6px; overflow-x: auto; font-size: 0.8rem; }
+        .spinner { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #30363d; border-top-color: #58a6ff; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 0.5rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .flex-row { display: flex; gap: 1rem; align-items: flex-start; }
+        .flex-row > .card { flex: 1; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
+        .stat-card { background: #0d1117; padding: 0.75rem; border-radius: 6px; text-align: center; }
+        .stat-card .value { font-size: 1.8rem; font-weight: bold; color: #58a6ff; }
+        .stat-card .label { font-size: 0.75rem; color: #8b949e; }
+        .answer-text { white-space: pre-wrap; }
+        .htmx-indicator { opacity: 0; transition: opacity 0.2s; }
+        .htmx-request .htmx-indicator { opacity: 1; }
+        .htmx-request.htmx-indicator { opacity: 1; }
+        footer { text-align: center; color: #8b949e; font-size: 0.8rem; padding: 2rem 0; border-top: 1px solid #30363d; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>x86-RAG <span>Intel x86-64 Instruction Reference</span></h1>
+            <nav>
+                <a href="/" class="{% if active == 'index' %}active{% endif %}">Query</a>
+                <a href="/stats" hx-get="/stats" hx-target="#main-content" hx-push-url="true" class="{% if active == 'stats' %}active{% endif %}">Stats</a>
+            </nav>
+        </header>
+        <main id="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        <footer>
+            x86-RAG &mdash; runs locally via Ollama + ChromaDB &middot;
+            <a href="https://github.com/Pranav-v-cs/x86-rag" style="color:#58a6ff;">GitHub</a>
+        </footer>
+    </div>
+</body>
+</html>

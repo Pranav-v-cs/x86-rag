@@ -1,0 +1,22 @@
+<div style="margin-top: 0.75rem;">
+{% if error %}
+    <div class="error">{{ error }}</div>
+{% elif chunks %}
+    <div class="card">
+        <h2>Top {{ chunks|length }} sources for: <em>{{ question }}</em></h2>
+        {% for chunk in chunks %}
+        <div class="source">
+            <div class="meta">
+                <span class="tag tag-mnemonic">{{ chunk.mnemonic }}</span>
+                {% if chunk.page %}<span class="tag tag-source">Page {{ chunk.page }}</span>{% endif %}
+                <span class="tag tag-subsection">{{ chunk.subsection }}</span>
+                <span>{{ chunk.source }}</span>
+            </div>
+            <div>{{ chunk.text[:400] }}{% if chunk.text|length > 400 %}&hellip;{% endif %}</div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="error">No relevant sources found.</div>
+{% endif %}
+</div>

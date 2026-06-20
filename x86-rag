@@ -3,4 +3,30 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}${DIR}"
-exec python3 -m src "$@"
+
+if [ $# -eq 0 ]; then
+    exec python3 -m src
+fi
+
+case "$1" in
+    --cli)
+        shift
+        exec python3 -m src --cli "$@"
+        ;;
+    -h|--help)
+        echo "Usage: x86-rag [COMMAND]"
+        echo ""
+        echo "Start the web UI (default):"
+        echo "  ./x86-rag"
+        echo ""
+        echo "CLI commands (secondary):"
+        echo "  ./x86-rag --cli query \"<question>\""
+        echo "  ./x86-rag --cli lookup <mnemonic>"
+        echo "  ./x86-rag --cli sources \"<question>\""
+        echo "  ./x86-rag --cli ingest"
+        echo "  ./x86-rag --cli stats"
+        ;;
+    *)
+        exec python3 -m src "$@"
+        ;;
+esac
