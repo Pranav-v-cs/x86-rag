@@ -1,8 +1,11 @@
 import logging
 import os
+import sys
 from pathlib import Path
 
 import typer
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.embeddings import EmbeddingManager
 from src.ingest import ingest_all
@@ -202,3 +205,7 @@ def _format_bytes(b: int) -> str:
 
 def main():
     app()
+
+
+if __name__ == "__main__":
+    main()
